@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untuk Papih</title>
+
+<!--
+  ============================================
+  CARA MENGEDIT HALAMAN INI (baca dulu ya!)
+  ============================================
+  1. GANTI NAMA AYAH
+     Cari teks "Ayah" di seluruh file ini, ganti kalau mau pakai
+     panggilan khusus (mis. "Papa", "Abi", "Bapak").
+
+  2. UCAPAN
+     Cari bagian < UCAPAN > di bawah, edit teksnya sesuka hati.
+
+  3. FOTO KENANGAN
+     Taruh 6 foto di FOLDER YANG SAMA dengan file HTML ini,
+     dengan nama persis:
+       foto1.jpg  foto2.jpg  foto3.jpg
+       foto4.jpg  foto5.jpg  foto6.jpg
+     (boleh .png / .jpeg juga, tinggal ganti ekstensi di kode <img>)
+     Kalau foto belum ada, akan otomatis muncul tulisan
+     "taruh foto di sini" — jadi aman dicoba dulu tanpa foto.
+
+  4. NAMA PENGIRIM
+     Cari teks "Anak-anakmu" di bagian penutup, ganti dengan nama kalian.
+
+  5. CARA BUKA
+     Tinggal double-click file ini, akan otomatis kebuka di browser
+     (Chrome/Edge/Safari dll). Tidak perlu internet, tidak perlu install apa-apa.
+  ============================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Caveat:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper: #EFE6CF;
+    --paper-light: #FBF6E9;
+    --ink: #33261D;
+    --gold: #C89B3C;
+    --teal: #2F6F63;
+    --rust: #A6473D;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background: var(--paper);
+    color: var(--ink);
+    font-family:'Poppins', sans-serif;
+    overflow: hidden;
+    height:100vh;
+  }
+  body.opened{ overflow:auto; height:auto; }
+
+  h1,h2,h3{ font-family:'Playfair Display', serif; }
+  .script{ font-family:'Caveat', cursive; }
+
+  /* ---------- HERO / AMPLOP ---------- */
+  #hero{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(200,155,60,0.12), transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(47,111,99,0.10), transparent 45%),
+      var(--paper);
+    position:relative;
+  }
+
+  #hero .eyebrow{
+    letter-spacing:0.3em;
+    font-size:0.75rem;
+    text-transform:uppercase;
+    color: var(--teal);
+    margin-bottom: 18px;
+    opacity:0.8;
+  }
+
+  .envelope-wrap{
+    width:min(320px, 78vw);
+    aspect-ratio: 3 / 2;
+    cursor:pointer;
+    position:relative;
+    perspective: 1200px;
+  }
+
+  .envelope-body{
+    position:absolute;
+    inset:0;
+    background: var(--paper-light);
+    border:1px solid rgba(51,38,29,0.25);
+    border-radius:6px;
+    box-shadow: 0 18px 40px rgba(51,38,29,0.18);
+    overflow:hidden;
+  }
+
+  .envelope-body::before{
+    /* garis lipatan bawah membentuk V */
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:100%;
+    background:
+      linear-gradient(155deg, transparent 49.6%, rgba(51,38,29,0.08) 50%),
+      linear-gradient(205deg, transparent 49.6%, rgba(51,38,29,0.08) 50%);
+  }
+
+  .envelope-flap{
+    position:absolute;
+    top:0; left:0; right:0;
+    height:52%;
+    background: var(--teal);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transition: transform 0.9s cubic-bezier(.65,0,.35,1);
+    z-index:3;
+  }
+  .envelope-wrap.open .envelope-flap{
+    transform: rotateX(180deg);
+  }
+
+  .seal{
+    position:absolute;
+    top:34%; left:50%;
+    transform:translate(-50%,-50%);
+    width:56px; height:56px;
+    background: var(--rust);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    color: var(--paper-light);
+    font-family:'Playfair Display', serif;
+    font-size:1.3rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    z-index:5;
+    transition: opacity 0.4s ease, transform 0.5s ease;
+  }
+  .envelope-wrap.open .seal{
+    opacity:0;
+    transform:translate(-50%,-50%) scale(0.3) rotate(25deg);
+  }
+
+  .envelope-wrap.open .envelope-body{
+    animation: liftLetter 0.9s 0.5s ease forwards;
+  }
+  @keyframes liftLetter{
+    to{ box-shadow: 0 30px 60px rgba(51,38,29,0.28); }
+  }
+
+  #hero .hint{
+    margin-top:26px;
+    font-size:0.9rem;
+    color: var(--ink);
+    opacity:0.65;
+  }
+
+  #hero .title-line{
+    font-size: clamp(1.4rem, 4vw, 2.1rem);
+    margin-bottom: 34px;
+  }
+
+  /* ---------- SURAT / UCAPAN ---------- */
+  section{
+    padding: 8vh 6vw;
+    opacity:0;
+    transform: translateY(24px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  section.show{ opacity:1; transform:none; }
+
+  #surat{
+    max-width: 720px;
+    margin: 0 auto;
+    background: var(--paper-light);
+    border-radius: 4px;
+    padding: 8vh 7vw;
+    box-shadow: 0 10px 30px rgba(51,38,29,0.10);
+    position:relative;
+  }
+  #surat::before{
+    content:"";
+    position:absolute; inset:14px;
+    border:1px solid rgba(200,155,60,0.35);
+    pointer-events:none;
+  }
+  #surat h2{
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    color: var(--rust);
+    margin-bottom: 22px;
+  }
+  #surat p{
+    font-size:1.05rem;
+    line-height:1.9;
+    margin-bottom:16px;
+    color: rgba(51,38,29,0.9);
+  }
+  #surat .tanda-tangan{
+    margin-top: 34px;
+    font-family:'Caveat', cursive;
+    font-size:2rem;
+    color: var(--teal);
+  }
+
+  /* ---------- GALERI ---------- */
+  #galeri{ text-align:center; }
+  #galeri .kicker{
+    color: var(--teal);
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    font-size:0.75rem;
+    margin-bottom:10px;
+  }
+  #galeri h2{
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    margin-bottom: 50px;
+  }
+
+  .polaroid-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 34px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .polaroid{
+    background: var(--paper-light);
+    padding: 14px 14px 44px 14px;
+    box-shadow: 0 12px 26px rgba(51,38,29,0.16);
+    position:relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .polaroid:nth-child(odd){ transform: rotate(-2.4deg); }
+  .polaroid:nth-child(even){ transform: rotate(2deg); }
+  .polaroid:hover{
+    transform: rotate(0deg) scale(1.04);
+    box-shadow: 0 18px 34px rgba(51,38,29,0.22);
+    z-index:2;
+  }
+
+  .polaroid .tape{
+    position:absolute;
+    top:-10px; left:50%;
+    transform: translateX(-50%) rotate(-3deg);
+    width:70px; height:22px;
+    background: rgba(200,155,60,0.55);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .polaroid .frame{
+    width:100%;
+    aspect-ratio: 4/5;
+    background: repeating-linear-gradient(135deg, #e4d8b8, #e4d8b8 8px, #ddd0ae 8px, #ddd0ae 16px);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .polaroid img{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  .polaroid .placeholder-text{
+    font-size:0.85rem;
+    color: rgba(51,38,29,0.55);
+    padding: 0 12px;
+    text-align:center;
+  }
+  .polaroid img.missing{ display:none; }
+
+  .polaroid .caption{
+    margin-top:12px;
+    font-family:'Caveat', cursive;
+    font-size:1.25rem;
+    color: var(--ink);
+  }
+
+  /* ---------- PENUTUP ---------- */
+  #penutup{
+    text-align:center;
+    background: linear-gradient(180deg, var(--paper) 0%, #e6dabc 100%);
+    position:relative;
+    overflow:hidden;
+    padding-bottom: 12vh;
+  }
+  #penutup h2{
+    font-size: clamp(1.9rem, 5vw, 2.8rem);
+    margin-bottom: 18px;
+    color: var(--rust);
+  }
+  #penutup p{
+    max-width:560px;
+    margin: 0 auto 10px auto;
+    font-size:1.05rem;
+    line-height:1.8;
+  }
+  #penutup .tanda-tangan{
+    margin-top: 30px;
+    font-family:'Caveat', cursive;
+    font-size: 2.1rem;
+    color: var(--teal);
+  }
+
+  .float-heart{
+    position:absolute;
+    bottom:-10%;
+    font-size: 1.4rem;
+    color: var(--rust);
+    opacity:0.35;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp{
+    to{ transform: translateY(-120vh) rotate(30deg); opacity:0; }
+  }
+
+  @media (max-width: 560px){
+    section{ padding: 7vh 6vw; }
+    #surat{ padding: 6vh 6vw; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ========== HERO / AMPLOP ========== -->
+  <section id="hero" style="opacity:1; transform:none;">
+    <div class="eyebrow">Sebuah kejutan kecil</div>
+    <div class="title-line script" style="font-size:2.2rem;">Untuk Papih, dengan cinta</div>
+    <div class="envelope-wrap" id="envelope">
+      <div class="envelope-body">
+        <div class="envelope-flap"></div>
+        <div class="seal">A</div>
+      </div>
+    </div>
+    <div class="hint">klik amplopnya ya, Pih</div>
+  </section>
+
+  <!-- ========== UCAPAN ========== -->
+  <section id="surat">
+    <!-- UCAPAN: edit teks di bawah ini sesuka hati -->
+    <h2>Selamat ulang tahun, Papih.</h2>
+    <p>
+      Hari ini, kami cuma mau bilang: terima kasih. Untuk semua kerja keras
+      yang kadang nggak pernah diomongin, untuk semua pengorbanan yang
+      dilakukan diam-diam, dan untuk cinta yang selalu ada meskipun jarang
+      diucapkan.
+    </p>
+    <p>
+      Papih adalah alasan kami bisa berdiri sejauh ini. Semoga di usia yang
+      baru ini, Papih selalu diberi kesehatan, umur panjang, dan kebahagiaan
+      yang sama besarnya dengan yang sudah Papih berikan ke kami.
+    </p>
+    <p>
+      Kami sayang Papih, lebih dari yang biasa kami tunjukkan.
+    </p>
+    <div class="tanda-tangan">— dengan sayang</div>
+  </section>
+
+  <!-- ========== GALERI FOTO ========== -->
+  <section id="galeri">
+    <div class="kicker">Album Kecil</div>
+    <h2>Kenangan Kita</h2>
+    <div class="polaroid-grid">
+
+      <div class="polaroid">
+        <div class="tape"></div>
+        <div class="frame">
+          <img src="foto1.jpg" alt="kenangan 1" onerror="this.classList.add('missing'); this.nextElementSibling.style.display='block'">
+          <div class="placeholder-text" style="display:none;">taruh foto1.jpg di sini</div>
+        </div>
+        <div class="caption">momen bareng</div>
+      </div>
+
+      <div class="polaroid">
+        <div class="tape"></div>
+        <div class="frame">
+          <img src="foto2.jpg" alt="kenangan 2" onerror="this.classList.add('missing'); this.nextElementSibling.style.display='block'">
+          <div class="placeholder-text" style="display:none;">taruh foto2.jpg di sini</div>
+        </div>
+        <div class="caption">liburan keluarga</div>
+      </div>
+
+      <div class="polaroid">
+        <div class="tape"></div>
+        <div class="frame">
+          <img src="foto3.jpg" alt="kenangan 3" onerror="this.classList.add('missing'); this.nextElementSibling.style.display='block'">
+          <div class="placeholder-text" style="display:none;">taruh foto3.jpg di sini</div>
+        </div>
+        <div class="caption">masa kecil</div>
+      </div>
+
+      <div class="polaroid">
+        <div class="tape"></div>
+        <div class="frame">
+          <img src="foto4.jpg" alt="kenangan 4" onerror="this.classList.add('missing'); this.nextElementSibling.style.display='block'">
+          <div class="placeholder-text" style="display:none;">taruh foto4.jpg di sini</div>
+        </div>
+        <div class="caption">hari spesial</div>
+      </div>
+
+      <div class="polaroid">
+        <div class="tape"></div>
+        <div class="frame">
+          <img src="foto5.jpg" alt="kenangan 5" onerror="this.classList.add('missing'); this.nextElementSibling.style.display='block'">
+          <div class="placeholder-text" style="display:none;">taruh foto5.jpg di sini</div>
+        </div>
+        <div class="caption">makan bareng</div>
+      </div>
+
+      <div class="polaroid">
+        <div class="tape"></div>
+        <div class="frame">
+          <img src="foto6.jpg" alt="kenangan 6" onerror="this.classList.add('missing'); this.nextElementSibling.style.display='block'">
+          <div class="placeholder-text" style="display:none;">taruh foto6.jpg di sini</div>
+        </div>
+        <div class="caption">selalu bersama</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== PENUTUP ========== -->
+  <section id="penutup">
+    <h2>Panjang umur, Papih 🎂</h2>
+    <p>Semoga tahun ini membawa lebih banyak hal baik, lebih banyak tawa,
+    dan lebih sedikit alasan untuk khawatir.</p>
+    <p>Ini baru langkah kecil untuk membalas semua yang sudah Papih kasih.</p>
+    <div class="tanda-tangan">Anak-anakmu, yang selalu sayang Papih</div>
+  </section>
+
+<script>
+  // Buka amplop
+  const envelope = document.getElementById('envelope');
+  envelope.addEventListener('click', () => {
+    if(envelope.classList.contains('open')) return;
+    envelope.classList.add('open');
+    document.body.classList.add('opened');
+    setTimeout(() => {
+      document.getElementById('surat').scrollIntoView({behavior:'smooth'});
+    }, 900);
+  });
+
+  // Reveal saat scroll
+  const sections = document.querySelectorAll('section:not(#hero)');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('show'); });
+  }, { threshold: 0.15 });
+  sections.forEach(s => io.observe(s));
+
+  // Hati-hati mengambang di penutup
+  const penutup = document.getElementById('penutup');
+  for(let i=0;i<10;i++){
+    const h = document.createElement('div');
+    h.className = 'float-heart';
+    h.textContent = '♥';
+    h.style.left = Math.random()*100 + '%';
+    h.style.animationDuration = (8 + Math.random()*6) + 's';
+    h.style.animationDelay = (Math.random()*8) + 's';
+    h.style.fontSize = (1 + Math.random()*1.2) + 'rem';
+    penutup.appendChild(h);
+  }
+</script>
+
+</body>
+</html>
